@@ -1,0 +1,77 @@
+package com.sparta.upgradeschedule.entity;
+
+
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+@NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
+@Getter
+@Setter
+@Entity
+@Table(name = "schedule")
+public class Schedule {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "writer_name")
+    private String writerName;
+
+    @Column(name = "schedule_title")
+    private String scheduleTitle;
+
+    @Column(name = "schedule_contents")
+    private String scheduleContents;
+
+    @CreatedDate
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(updatable = false,name = "write_date")
+    private LocalDateTime writeDate;
+    @CreatedDate
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "update_date")
+    private LocalDateTime updateDate;
+
+    public Schedule(
+            Long id,
+            String writerName,
+            String scheduleTitle,
+            String scheduleContents,
+            LocalDateTime writeDate,
+            LocalDateTime updateDate) {
+        this.id = id;
+        this.writerName = writerName;
+        this.scheduleTitle = scheduleTitle;
+        this.scheduleContents = scheduleContents;
+        this.writeDate = writeDate;
+        this.updateDate = updateDate;
+    }
+
+    @OneToMany(mappedBy = "schedule")
+    private List<Comment> commentList = new ArrayList<>();
+
+
+    public Schedule(String writerName, String scheduleTitle, String scheduleContents) {
+        this.writerName=writerName;
+        this.scheduleTitle=scheduleTitle;
+        this.scheduleContents=scheduleContents;
+
+    }
+
+    public void update(String scheduleTitle, String scheduleContents) {
+        this.scheduleTitle=scheduleTitle;
+        this.scheduleContents =scheduleContents;
+    }
+}
