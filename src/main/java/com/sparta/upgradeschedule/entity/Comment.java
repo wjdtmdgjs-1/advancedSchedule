@@ -22,6 +22,12 @@ public class Comment {
     @Column(name = "id")
     private Long id;
 
+    @Column(name= "comment_writer_name")
+    private String commentWriterName;
+
+    @Column(name = "comment_contents")
+    private String commentContents;
+
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     @Column(updatable = false, name = "comment_write_date")
@@ -32,11 +38,17 @@ public class Comment {
     @Column(name = "comment_update_date")
     private LocalDateTime commentUpdateDate;
 
-    @Column(name= "comment_writer_name")
-    private String commentWriterName;
-
-    @Column(name = "comment_contents")
-    private String commentContents;
+    public Comment(Long id,
+                   String commentWriterName,
+                   String commentContents,
+                   LocalDateTime commentWriteDate,
+                   LocalDateTime commentUpdateDate) {
+        this.id = id;
+        this.commentWriterName = commentWriterName;
+        this.commentContents = commentContents;
+        this.commentWriteDate = commentWriteDate;
+        this.commentUpdateDate = commentUpdateDate;
+    }
 
     @ManyToOne
     @JoinColumn(name="schedule_id")
@@ -44,4 +56,12 @@ public class Comment {
 
 
 
+    public Comment(String commentWriterName, String commentContents) {
+        this.commentWriterName=commentWriterName;
+        this.commentContents=commentContents;
+    }
+
+    public void update(String commentContents) {
+        this.commentContents=commentContents;
+    }
 }
