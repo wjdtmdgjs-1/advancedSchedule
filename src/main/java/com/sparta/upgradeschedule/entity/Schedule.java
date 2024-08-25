@@ -35,6 +35,8 @@ public class Schedule {
     @Column(name = "schedule_contents")
     private String scheduleContents;
 
+
+
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     @Column(updatable = false,name = "write_date")
@@ -66,6 +68,7 @@ public class Schedule {
     @Column(name = "comment_count")
     private int commentCount = countComment(commentList);
 
+
     @OneToMany(mappedBy = "schedule")
     private List<Pic> picList = new ArrayList<>();
 
@@ -89,4 +92,6 @@ public class Schedule {
         }
         return a;
     }
+
+
 }
