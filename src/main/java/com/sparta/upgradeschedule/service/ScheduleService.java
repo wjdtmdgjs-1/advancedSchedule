@@ -24,14 +24,14 @@ public class ScheduleService {
     @Transactional
     public ScheduleSaveResponseDto saveSchedule(ScheduleSaveRequestDto scheduleSaveRequestDto) {
         Schedule schedule = new Schedule(
-                scheduleSaveRequestDto.getWriterName(),
+                scheduleSaveRequestDto.getWriterId(),
                 scheduleSaveRequestDto.getScheduleTitle(),
                 scheduleSaveRequestDto.getScheduleContents()
         );
         Schedule savedSchedule = scheduleRepository.save(schedule);
         return new ScheduleSaveResponseDto(
                 savedSchedule.getId(),
-                savedSchedule.getWriterName(),
+                savedSchedule.getWriterId(),
                 savedSchedule.getScheduleTitle(),
                 savedSchedule.getScheduleContents(),
                 savedSchedule.getWriteDate(),
@@ -43,7 +43,7 @@ public class ScheduleService {
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(()->new NullPointerException("일정이 없습니다."));
         return new ScheduleGetResponseDto(
                 schedule.getId(),
-                schedule.getWriterName(),
+                schedule.getWriterId(),
                 schedule.getScheduleTitle(),
                 schedule.getScheduleContents(),
                 schedule.getWriteDate(),
@@ -58,7 +58,7 @@ public class ScheduleService {
                 scheduleUpdateRequestDto.getScheduleContents());
         return new ScheduleUpdateResponseDto(
                 schedule.getId(),
-                schedule.getWriterName(),
+                schedule.getWriterId(),
                 schedule.getScheduleTitle(),
                 schedule.getScheduleContents(),
                 schedule.getWriteDate(),

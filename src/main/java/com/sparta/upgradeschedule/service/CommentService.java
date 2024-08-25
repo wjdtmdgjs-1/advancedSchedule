@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-@Transactional
+
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -55,6 +55,7 @@ public class CommentService {
         return dto;
     }
 
+    @Transactional
     public CommentUpdateResponseDto updateComment(Long id, CommentUpdateRequestDto commentUpdateRequestDto) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(()->new NullPointerException("댓글 없습니다."));
@@ -66,7 +67,7 @@ public class CommentService {
                 comment.getCommentUpdateDate());
     }
 
-
+    @Transactional
     public void deleteComment(Long id) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(()->new NullPointerException("댓글 없습니다."));

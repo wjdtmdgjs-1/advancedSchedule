@@ -7,20 +7,20 @@ import java.time.LocalDateTime;
 @Getter
 public class ScheduleGetResponseDto {
     private final Long id;
-    private final String writerName;
+    private final Long writerId;
     private final String scheduleTitle;
     private final String scheduleContents;
     private final LocalDateTime writeDate;
     private final LocalDateTime updateDate;
 
     public ScheduleGetResponseDto(Long id,
-                                   String writerName,
+                                  Long writerId,
                                    String scheduleTitle,
                                    String scheduleContents,
                                    LocalDateTime writeDate,
                                    LocalDateTime updateDate) {
         this.id = id;
-        this.writerName = writerName;
+        this.writerId = writerId;
         this.scheduleTitle = scheduleTitle;
         this.scheduleContents = scheduleContents;
         this.writeDate = writeDate;

@@ -26,16 +26,14 @@ public class Schedule {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "writer_name")
-    private String writerName;
+    @Column(name = "writer_id")
+    private Long writerId;
 
     @Column(name = "schedule_title")
     private String scheduleTitle;
 
     @Column(name = "schedule_contents")
     private String scheduleContents;
-
-
 
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
@@ -48,13 +46,13 @@ public class Schedule {
 
     public Schedule(
             Long id,
-            String writerName,
+            Long writerId,
             String scheduleTitle,
             String scheduleContents,
             LocalDateTime writeDate,
             LocalDateTime updateDate) {
         this.id = id;
-        this.writerName = writerName;
+        this.writerId = writerId;
         this.scheduleTitle = scheduleTitle;
         this.scheduleContents = scheduleContents;
         this.writeDate = writeDate;
@@ -68,8 +66,11 @@ public class Schedule {
     @Column(name = "comment_count")
     private int commentCount = countComment(commentList);
 
-    public Schedule(String writerName, String scheduleTitle, String scheduleContents) {
-        this.writerName=writerName;
+    @OneToMany(mappedBy = "schedule")
+    private List<Pic> picList = new ArrayList<>();
+
+    public Schedule(Long writerId, String scheduleTitle, String scheduleContents) {
+        this.writerId=writerId;
         this.scheduleTitle=scheduleTitle;
         this.scheduleContents=scheduleContents;
 
