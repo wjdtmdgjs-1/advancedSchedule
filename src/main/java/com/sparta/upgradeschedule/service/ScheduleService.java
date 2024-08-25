@@ -8,6 +8,10 @@ import com.sparta.upgradeschedule.dto.schedule.ResponseDto.ScheduleUpdateRespons
 import com.sparta.upgradeschedule.entity.Schedule;
 import com.sparta.upgradeschedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,5 +64,11 @@ public class ScheduleService {
                 schedule.getWriteDate(),
                 schedule.getUpdateDate()
         );
+    }
+
+    //페이지네이션
+    public Page<Schedule> getPageSchedule(int page, int size) {
+        Pageable pageable = PageRequest.of(page, page, Sort.by("update_date").descending());
+        return scheduleRepository.findAll(pageable);
     }
 }

@@ -15,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/schedules")
 public class CommentController {
     private final CommentService commentService;
 
@@ -32,7 +33,7 @@ public class CommentController {
     public ResponseEntity<List<CommentGetResponseDto>> getComments(){
         return ResponseEntity.ok(commentService.getComments());
     }
-
+    //수정은 댓글 내용만 수정할 수 있다.
     @PutMapping("/comments/{id}")
     public ResponseEntity<CommentUpdateResponseDto> updateComment(@PathVariable Long id,
                                                                   @RequestBody CommentUpdateRequestDto commentUpdateRequestDto){

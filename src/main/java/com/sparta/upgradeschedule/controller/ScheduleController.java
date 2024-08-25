@@ -5,8 +5,10 @@ import com.sparta.upgradeschedule.dto.schedule.RequestDto.ScheduleUpdateRequestD
 import com.sparta.upgradeschedule.dto.schedule.ResponseDto.ScheduleGetResponseDto;
 import com.sparta.upgradeschedule.dto.schedule.ResponseDto.ScheduleSaveResponseDto;
 import com.sparta.upgradeschedule.dto.schedule.ResponseDto.ScheduleUpdateResponseDto;
+import com.sparta.upgradeschedule.entity.Schedule;
 import com.sparta.upgradeschedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +33,12 @@ public class ScheduleController {
     public ResponseEntity<ScheduleUpdateResponseDto> updateSchedule(@PathVariable Long id,
                                                                     @RequestBody ScheduleUpdateRequestDto scheduleUpdateRequestDto){
         return ResponseEntity.ok(scheduleService.updateSchedule(id,scheduleUpdateRequestDto));
+    }
+
+    @GetMapping("/schedules")
+    public ResponseEntity<Page<Schedule>> getPageSchedule(@RequestParam(defaultValue = "0") int page,
+                                          @RequestParam(defaultValue = "10") int size){
+        return ResponseEntity.ok(scheduleService.getPageSchedule(page, size));
     }
 
 }

@@ -35,6 +35,8 @@ public class Schedule {
     @Column(name = "schedule_contents")
     private String scheduleContents;
 
+
+
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     @Column(updatable = false,name = "write_date")
@@ -62,6 +64,9 @@ public class Schedule {
     @OneToMany(mappedBy = "schedule")
     private List<Comment> commentList = new ArrayList<>();
 
+    //comment 갯수 표현하기위함.
+    @Column(name = "comment_count")
+    private int commentCount = countComment(commentList);
 
     public Schedule(String writerName, String scheduleTitle, String scheduleContents) {
         this.writerName=writerName;
@@ -73,5 +78,14 @@ public class Schedule {
     public void update(String scheduleTitle, String scheduleContents) {
         this.scheduleTitle=scheduleTitle;
         this.scheduleContents =scheduleContents;
+    }
+
+    //comment의 갯수를 세어주는 메서드
+    public int countComment(List<Comment> list){
+        int a =0;
+        for(Comment c : list){
+            a++;
+        }
+        return a;
     }
 }
