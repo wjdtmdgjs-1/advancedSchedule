@@ -61,7 +61,7 @@ public class Schedule {
         this.updateDate = updateDate;
     }
 
-    @OneToMany(mappedBy = "schedule")
+    @OneToMany(mappedBy = "schedule",cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Comment> commentList = new ArrayList<>();
 
     //comment 갯수 표현하기위함.
