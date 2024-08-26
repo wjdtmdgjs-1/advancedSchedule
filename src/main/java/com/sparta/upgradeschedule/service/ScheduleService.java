@@ -3,13 +3,15 @@ package com.sparta.upgradeschedule.service;
 import com.sparta.upgradeschedule.dto.schedule.RequestDto.ScheduleSaveRequestDto;
 import com.sparta.upgradeschedule.dto.schedule.RequestDto.ScheduleUpdateRequestDto;
 import com.sparta.upgradeschedule.dto.schedule.ResponseDto.*;
-import com.sparta.upgradeschedule.entity.Comment;
-import com.sparta.upgradeschedule.entity.Pic;
-import com.sparta.upgradeschedule.entity.Schedule;
-import com.sparta.upgradeschedule.entity.User;
+import com.sparta.upgradeschedule.entity.*;
+import com.sparta.upgradeschedule.exception.AuthorizedCheckException;
+import com.sparta.upgradeschedule.jwt.JwtUtil;
 import com.sparta.upgradeschedule.repository.PicRepository;
 import com.sparta.upgradeschedule.repository.ScheduleRepository;
 import com.sparta.upgradeschedule.repository.UserRepository;
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,14 +23,14 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-
+@Transactional
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
     private final PicRepository picRepository;
+    private final JwtUtil jwtUtil;
 
 
-    @Transactional
     public ScheduleSaveResponseDto saveSchedule(ScheduleSaveRequestDto scheduleSaveRequestDto) {
         //writer id를 가진 유저가 있는지 체크하기
         userRepository.findById(scheduleSaveRequestDto.getWriterId());
@@ -65,7 +67,7 @@ public class ScheduleService {
         );
     }
 
-    @Transactional
+
     public ScheduleGetResponseDto getSchedule(Long id) {
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(()->new NullPointerException("일정이 없습니다."));
         List<Long> list = makePicsUserIdList(schedule.getPicList());
@@ -96,7 +98,7 @@ public class ScheduleService {
                 schedule.getUpdateDate());
     }
 
-    @Transactional
+
     public List<ScheduleGetAllResponseDto> getSchedules() {
         List<Schedule> scheduleList = scheduleRepository.findAll();
         List<ScheduleGetAllResponseDto> dto = new ArrayList<>();
@@ -113,11 +115,21 @@ public class ScheduleService {
         return dto;
     }
 
-    @Transactional
-    public ScheduleUpdateResponseDto updateSchedule(Long id, ScheduleUpdateRequestDto scheduleUpdateRequestDto) {
+
+    public ScheduleUpdateResponseDto updateSchedule(Long id, ScheduleUpdateRequestDto scheduleUpdateRequestDto
+            , HttpServletRequest res) {
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(()->new NullPointerException("일정이 없습니다."));
+        //
+        Claims authCheck= jwtUtil.getUserInfoFromToken(jwtUtil.substringToken(jwtUtil.getTokenFromRequest(res)));
+        //
+        User user = userRepository.findByEmail(authCheck.getSubject()).orElseThrow(()->new NullPointerException("유저가 없습니다."));
+        if(UserRoleEnum.ADMIN.equals(user.getRole())){
         schedule.update(scheduleUpdateRequestDto.getScheduleTitle(),
                 scheduleUpdateRequestDto.getScheduleContents());
+        }else{
+            throw new AuthorizedCheckException("권한체크");
+        }
+
         return new ScheduleUpdateResponseDto(
                 schedule.getId(),
                 schedule.getWriterId(),
@@ -156,6 +168,16 @@ public class ScheduleService {
     }
 
 
-
-
+    public void deleteSchedule(Long id,HttpServletRequest res) {
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(()->new NullPointerException("스케쥴없음"));
+        //
+        Claims authCheck= jwtUtil.getUserInfoFromToken(jwtUtil.substringToken(jwtUtil.getTokenFromRequest(res)));
+        //
+        User user = userRepository.findByEmail(authCheck.getSubject()).orElseThrow(()->new NullPointerException("유저가 없습니다."));
+        if(UserRoleEnum.ADMIN.equals(user.getRole())){
+        scheduleRepository.delete(schedule);}
+        else{
+            throw new AuthorizedCheckException("권한체크");
+        }
+    }
 }

@@ -24,10 +24,10 @@ public class User {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "user_name")
+    @Column(name = "user_name",nullable = false, unique = true)
     private String userName;
 
-    @Column(name = "email")
+    @Column(name = "email",nullable = false, unique = true)
     private String email;
 
     @CreatedDate
@@ -40,12 +40,21 @@ public class User {
     @Column(name = "user_update_date")
     private LocalDateTime userUpdateDate;
 
+    @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private UserRoleEnum role;
+
     @OneToMany(mappedBy = "user")
     private List<Pic> picList = new ArrayList<>();
 
-    public User(String userName, String email) {
+    public User(String userName, String email, String password,UserRoleEnum role) {
         this.userName=userName;
         this.email=email;
+        this.password=password;
+        this.role=role;
     }
 
     public void update(String userName,String email) {

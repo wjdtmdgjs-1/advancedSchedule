@@ -4,6 +4,7 @@ import com.sparta.upgradeschedule.dto.schedule.RequestDto.ScheduleSaveRequestDto
 import com.sparta.upgradeschedule.dto.schedule.RequestDto.ScheduleUpdateRequestDto;
 import com.sparta.upgradeschedule.dto.schedule.ResponseDto.*;
 import com.sparta.upgradeschedule.service.ScheduleService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -20,7 +21,7 @@ public class ScheduleController {
 
     @PostMapping("/schedules")
     public ResponseEntity<ScheduleSaveResponseDto> saveSchedule(@RequestBody ScheduleSaveRequestDto scheduleSaveRequestDto){
-        return ResponseEntity.ok(scheduleService.saveSchedule(scheduleSaveRequestDto));
+      return ResponseEntity.ok(scheduleService.saveSchedule(scheduleSaveRequestDto));
     }
 
     @GetMapping("/schedules/{id}")
@@ -43,8 +44,15 @@ public class ScheduleController {
     //할일 제목과, 할일 내용만 수정할 수 있다.
     @PutMapping("/schedules/{id}")
     public ResponseEntity<ScheduleUpdateResponseDto> updateSchedule(@PathVariable Long id,
-                                                                    @RequestBody ScheduleUpdateRequestDto scheduleUpdateRequestDto){
-        return ResponseEntity.ok(scheduleService.updateSchedule(id,scheduleUpdateRequestDto));
+                                                                    @RequestBody ScheduleUpdateRequestDto scheduleUpdateRequestDto,
+                                                                    HttpServletRequest res){
+        return ResponseEntity.ok(scheduleService.updateSchedule(id,scheduleUpdateRequestDto,res));
+    }
+
+    @DeleteMapping("/schedules/{id}")
+    public void deleteSchedule(@PathVariable Long id,HttpServletRequest res){
+        scheduleService.deleteSchedule(id,res);
+
     }
 
 
