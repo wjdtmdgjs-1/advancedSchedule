@@ -4,7 +4,6 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 public class ScheduleGetResponseDto {
@@ -15,12 +14,14 @@ public class ScheduleGetResponseDto {
     private final LocalDateTime writeDate;
     private final LocalDateTime updateDate;
     private final ArrayList<ArrayList<String>> picsData;
+    private final ArrayList<ArrayList<String>> commentsData;
 
     public ScheduleGetResponseDto(Long id,
                                   Long writerId,
                                   ArrayList<ArrayList<String>> picsData,
                                    String scheduleTitle,
                                    String scheduleContents,
+                                  ArrayList<ArrayList<String>> commentsData,
                                    LocalDateTime writeDate,
                                    LocalDateTime updateDate) {
         this.id = id;
@@ -28,6 +29,7 @@ public class ScheduleGetResponseDto {
         this.picsData=picsData;
         this.scheduleTitle = scheduleTitle;
         this.scheduleContents = scheduleContents;
+        this.commentsData=commentsData;
         this.writeDate = writeDate;
         this.updateDate = updateDate;
 

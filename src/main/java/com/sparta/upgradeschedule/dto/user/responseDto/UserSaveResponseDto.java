@@ -1,8 +1,6 @@
 package com.sparta.upgradeschedule.dto.user.responseDto;
 
-import jakarta.persistence.*;
 import lombok.Getter;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 

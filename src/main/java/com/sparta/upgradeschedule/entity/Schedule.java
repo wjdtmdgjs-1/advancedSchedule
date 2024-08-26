@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
@@ -35,13 +36,12 @@ public class Schedule {
     @Column(name = "schedule_contents")
     private String scheduleContents;
 
-
-
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     @Column(updatable = false,name = "write_date")
     private LocalDateTime writeDate;
-    @CreatedDate
+
+    @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "update_date")
     private LocalDateTime updateDate;
@@ -64,11 +64,6 @@ public class Schedule {
     @OneToMany(mappedBy = "schedule",cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Comment> commentList = new ArrayList<>();
 
-    //comment 갯수 표현하기위함.
-    @Column(name = "comment_count")
-    private int commentCount = countComment(commentList);
-
-
     @OneToMany(mappedBy = "schedule")
     private List<Pic> picList = new ArrayList<>();
 
@@ -85,13 +80,8 @@ public class Schedule {
     }
 
     //comment의 갯수를 세어주는 메서드
-    public int countComment(List<Comment> list){
-        int a =0;
-        for(Comment c : list){
-            a++;
-        }
-        return a;
+    public int countComment(List<Comment> commentList) {
+        return commentList.size();
     }
-
 
 }

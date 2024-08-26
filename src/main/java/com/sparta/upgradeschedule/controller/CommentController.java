@@ -6,7 +6,7 @@ import com.sparta.upgradeschedule.dto.comment.responseDto.CommentGetResponseDto;
 import com.sparta.upgradeschedule.dto.comment.responseDto.CommentSaveResponseDto;
 import com.sparta.upgradeschedule.dto.comment.responseDto.CommentUpdateResponseDto;
 import com.sparta.upgradeschedule.service.CommentService;
-import lombok.Getter;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

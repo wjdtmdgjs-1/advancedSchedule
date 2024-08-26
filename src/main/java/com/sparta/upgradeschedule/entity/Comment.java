@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
@@ -33,7 +34,7 @@ public class Comment {
     @Column(updatable = false, name = "comment_write_date")
     private LocalDateTime commentWriteDate;
 
-    @CreatedDate
+    @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "comment_update_date")
     private LocalDateTime commentUpdateDate;
@@ -50,7 +51,7 @@ public class Comment {
         this.commentUpdateDate = commentUpdateDate;
     }
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="schedule_id")
     private Schedule schedule;
 

@@ -2,10 +2,8 @@ package com.sparta.upgradeschedule.service;
 
 import com.sparta.upgradeschedule.dto.schedule.RequestDto.ScheduleSaveRequestDto;
 import com.sparta.upgradeschedule.dto.schedule.RequestDto.ScheduleUpdateRequestDto;
-import com.sparta.upgradeschedule.dto.schedule.ResponseDto.ScheduleGetAllResponseDto;
-import com.sparta.upgradeschedule.dto.schedule.ResponseDto.ScheduleGetResponseDto;
-import com.sparta.upgradeschedule.dto.schedule.ResponseDto.ScheduleSaveResponseDto;
-import com.sparta.upgradeschedule.dto.schedule.ResponseDto.ScheduleUpdateResponseDto;
+import com.sparta.upgradeschedule.dto.schedule.ResponseDto.*;
+import com.sparta.upgradeschedule.entity.Comment;
 import com.sparta.upgradeschedule.entity.Pic;
 import com.sparta.upgradeschedule.entity.Schedule;
 import com.sparta.upgradeschedule.entity.User;
@@ -14,9 +12,7 @@ import com.sparta.upgradeschedule.repository.ScheduleRepository;
 import com.sparta.upgradeschedule.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -74,13 +70,20 @@ public class ScheduleService {
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(()->new NullPointerException("일정이 없습니다."));
         List<Long> list = makePicsUserIdList(schedule.getPicList());
         ArrayList<ArrayList<String>> bigList = new ArrayList<>();
-        ArrayList<String> smallList = new ArrayList<>();
+        ArrayList<ArrayList<String>> bigList2 = new ArrayList<>();
         for(Long l : list){
+            ArrayList<String> smallList = new ArrayList<>();
             User user = userRepository.findById(l).orElseThrow(()->new NullPointerException("유저정보가 없습니다."));
             smallList.add(String.valueOf(user.getId()));
             smallList.add(user.getUserName());
             smallList.add(user.getEmail());
             bigList.add(smallList);
+        }
+        for(Comment c : schedule.getCommentList()){
+            ArrayList<String> smallList2 = new ArrayList<>();
+            smallList2.add(c.getCommentWriterName());
+            smallList2.add(c.getCommentContents());
+            bigList2.add(smallList2);
         }
         return new ScheduleGetResponseDto(
                 schedule.getId(),
@@ -88,6 +91,7 @@ public class ScheduleService {
                 bigList,
                 schedule.getScheduleTitle(),
                 schedule.getScheduleContents(),
+                bigList2,
                 schedule.getWriteDate(),
                 schedule.getUpdateDate());
     }
@@ -125,9 +129,21 @@ public class ScheduleService {
     }
 
     //페이지네이션
-    public Page<Schedule> getPageSchedule(int page, int size) {
-        Pageable pageable = PageRequest.of(page, page, Sort.by("update_date").descending());
-        return scheduleRepository.findAll(pageable);
+    public List<SchedulePageResponseDto> schedulePage(Pageable pageable){
+        Page<Schedule> page = scheduleRepository.findAll(pageable);
+        List<SchedulePageResponseDto> dto = new ArrayList<>();
+
+        for(Schedule s : page){
+            User user = userRepository.findById(s.getWriterId()).orElseThrow(()->new NullPointerException("유저없음"));
+            SchedulePageResponseDto a = new SchedulePageResponseDto(s.getScheduleTitle(),
+                    s.getScheduleContents(),
+                    s.countComment(s.getCommentList()),
+                    user.getUserName(),
+                    s.getWriteDate(),
+                    s.getUpdateDate());
+            dto.add(a);
+        }
+        return dto;
     }
 
     //담당 유저들 id 리스트
@@ -138,6 +154,7 @@ public class ScheduleService {
         }
         return userIdList;
     }
+
 
 
 

@@ -6,7 +6,9 @@ import com.sparta.upgradeschedule.dto.comment.responseDto.CommentGetResponseDto;
 import com.sparta.upgradeschedule.dto.comment.responseDto.CommentSaveResponseDto;
 import com.sparta.upgradeschedule.dto.comment.responseDto.CommentUpdateResponseDto;
 import com.sparta.upgradeschedule.entity.Comment;
+import com.sparta.upgradeschedule.entity.Schedule;
 import com.sparta.upgradeschedule.repository.CommentRepository;
+import com.sparta.upgradeschedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,19 +21,25 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentService {
     private final CommentRepository commentRepository;
+    private final ScheduleRepository scheduleRepository;
 
     @Transactional
     public CommentSaveResponseDto saveComment(CommentSaveRequestDto commentSaveRequestDto) {
         Comment comment = new Comment(commentSaveRequestDto.getCommentWriterName(),
                 commentSaveRequestDto.getCommentContents());
+        Schedule schedule = scheduleRepository.findById(commentSaveRequestDto.getScheduleId())
+                .orElseThrow(()-> new NullPointerException("일정이 없습니다."));
+        comment.setSchedule(schedule);
+
         Comment savedComment = commentRepository.save(comment);
+
         return new CommentSaveResponseDto(savedComment.getId(),
                 savedComment.getCommentWriterName(),
                 savedComment.getCommentContents(),
                 savedComment.getCommentWriteDate(),
                 savedComment.getCommentUpdateDate());
     }
-
+    @Transactional
     public CommentGetResponseDto getComment(Long id) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(()->new NullPointerException("댓글 없습니다."));
