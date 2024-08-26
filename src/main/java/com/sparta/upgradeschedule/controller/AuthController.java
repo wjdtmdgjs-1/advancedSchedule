@@ -1,4 +1,4 @@
-package com.sparta.upgradeschedule.auth;
+package com.sparta.upgradeschedule.controller;
 
 import com.sparta.upgradeschedule.entity.UserRoleEnum;
 import com.sparta.upgradeschedule.jwt.JwtUtil;

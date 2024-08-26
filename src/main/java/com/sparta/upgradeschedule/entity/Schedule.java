@@ -61,10 +61,10 @@ public class Schedule {
         this.updateDate = updateDate;
     }
 
-    @OneToMany(mappedBy = "schedule",cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "schedule",fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "schedule")
+    @OneToMany(mappedBy = "schedule",cascade = CascadeType.REMOVE,fetch = FetchType.LAZY)
     private List<Pic> picList = new ArrayList<>();
 
     public Schedule(Long writerId, String scheduleTitle, String scheduleContents) {

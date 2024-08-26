@@ -8,7 +8,6 @@ public class UserSaveRequestDto {
     private String userName;
     private String email;
     private String password;
-    private boolean admin = false;
-    private String adminToken = "";
+    private String adminToken;
 
 }

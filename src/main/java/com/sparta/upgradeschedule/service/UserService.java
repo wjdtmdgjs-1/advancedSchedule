@@ -16,6 +16,8 @@ import com.sparta.upgradeschedule.jwt.JwtUtil;
 import com.sparta.upgradeschedule.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +30,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -40,7 +43,7 @@ public class UserService {
         String password = passwordEncoder.encode(userSaveRequestDto.getPassword());
 
         // 회원 중복 확인
-        Optional<User> checkUsername = userRepository.findByUsername(username);
+        Optional<User> checkUsername = userRepository.findByUserName(username);
         if (checkUsername.isPresent()) {
             throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
         }
@@ -51,7 +54,7 @@ public class UserService {
             throw new IllegalArgumentException("중복된 Email 입니다.");
         }
         UserRoleEnum role = UserRoleEnum.USER;
-        if (userSaveRequestDto.isAdmin()) {
+        if (userSaveRequestDto.getAdminToken()!=null) {
             if (!ADMIN_TOKEN.equals(userSaveRequestDto.getAdminToken())) {
                 throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
             }
@@ -113,6 +116,7 @@ public class UserService {
 
     public UserLoginResponseDto login(UserLoginRequestDto userloginRequestDto, HttpServletResponse res) {
         String email = userloginRequestDto.getEmail();
+        log.info(email);
         String password = userloginRequestDto.getPassword();
 
         //사용자확인

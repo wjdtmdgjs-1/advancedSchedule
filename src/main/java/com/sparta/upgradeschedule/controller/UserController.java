@@ -20,7 +20,7 @@ import java.util.List;
 public class UserController {
     private final UserService userservice;
 
-    @PostMapping("/users")
+    @PostMapping("/user")
     public ResponseEntity<UserSaveResponseDto> saveUser(@RequestBody UserSaveRequestDto userSaveRequestDto){
         return ResponseEntity.ok(userservice.saveUser(userSaveRequestDto));
     }
@@ -35,24 +35,24 @@ public class UserController {
         return ResponseEntity.ok(userservice.getUsers());
     }
 
-    @PutMapping("/user/{id}")
+    @PutMapping("/users/{id}")
     public ResponseEntity<UserUpdateResponseDto> updateUser(@PathVariable Long id,
                                                             @RequestBody UserUpdateRequestDto userUpdateRequestDto){
         return ResponseEntity.ok(userservice.updateUser(id,userUpdateRequestDto));
     }
 
     @PostMapping("/user/login")
-    public ResponseEntity<UserLoginResponseDto> login(UserLoginRequestDto userloginRequestDto, HttpServletResponse res) {
+    public ResponseEntity<UserLoginResponseDto> login(@RequestBody UserLoginRequestDto userloginRequestDto, HttpServletResponse res) {
         try {
             userservice.login(userloginRequestDto, res);
         } catch (Exception e) {
-            System.out.println("로그인에러");;
+            System.out.println("로그인에러");
         }
         return ResponseEntity.ok(userservice.login(userloginRequestDto,res));
     }
 
 
-    @DeleteMapping("/user/{id}")
+    @DeleteMapping("/users/{id}")
     public void deleteUser(@PathVariable Long id){
         userservice.deleteUser(id);
     }
