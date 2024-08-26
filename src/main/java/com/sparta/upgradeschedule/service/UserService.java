@@ -26,18 +26,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
+
     @Autowired
     PasswordEncoder passwordEncoder;
+
     private final JwtUtil jwtUtil;
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
-    @Transactional
+
     public UserSaveResponseDto saveUser(UserSaveRequestDto userSaveRequestDto) {
         String username = userSaveRequestDto.getUserName();
         String password = passwordEncoder.encode(userSaveRequestDto.getPassword());
@@ -95,7 +97,7 @@ public class UserService {
     }
 
     //유저이름, 유저이메일 수정가능합니다
-    @Transactional
+
     public UserUpdateResponseDto updateUser(Long id, UserUpdateRequestDto userUpdateRequestDto) {
         User user = userRepository.findById(id)
                 .orElseThrow(()->new NullPointerException("유저가 없습니다."));
@@ -107,7 +109,7 @@ public class UserService {
                 user.getUserUpdateDate());
     }
 
-    @Transactional
+
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(()->new NullPointerException("유저가 없습니다."));
