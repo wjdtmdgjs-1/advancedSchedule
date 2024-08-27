@@ -1,5 +1,6 @@
 package com.sparta.upgradeschedule.service;
 
+import com.sparta.upgradeschedule.dto.ItemDto;
 import com.sparta.upgradeschedule.dto.schedule.RequestDto.ScheduleSaveRequestDto;
 import com.sparta.upgradeschedule.dto.schedule.RequestDto.ScheduleUpdateRequestDto;
 import com.sparta.upgradeschedule.dto.schedule.ResponseDto.*;
@@ -13,12 +14,16 @@ import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.cache.spi.support.AbstractReadWriteAccess;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -29,7 +34,7 @@ public class ScheduleService {
     private final UserRepository userRepository;
     private final PicRepository picRepository;
     private final JwtUtil jwtUtil;
-
+    private final WeatherService weatherService;
 
     public ScheduleSaveResponseDto saveSchedule(ScheduleSaveRequestDto scheduleSaveRequestDto) {
         //writer id를 가진 유저가 있는지 체크하기
@@ -39,6 +44,7 @@ public class ScheduleService {
                 scheduleSaveRequestDto.getScheduleTitle(),
                 scheduleSaveRequestDto.getScheduleContents()
         );
+
         Schedule savedSchedule = scheduleRepository.save(schedule);
         ArrayList<Long> ids = scheduleSaveRequestDto.getPicsId();
         List<Pic> pics = new ArrayList<>();
@@ -53,6 +59,20 @@ public class ScheduleService {
             picRepository.save(pic);
             pics.add(pic);
         }
+
+        List<ItemDto> weather = new ArrayList<>(weatherService.searchItems());
+        /*DateTimeFormatter pattern = DateTimeFormatter.ofPattern("MM-dd");
+        LocalDateTime stringWriteTime = LocalDateTime.parse(schedule.getWriteDate().toString(), pattern);*/
+        String a = schedule.getWriteDate().toString();
+        List<String> aa = Arrays.stream(a.split("")).toList();
+        String b = aa.get(5) +aa.get(6)+aa.get(7)+aa.get(8)+aa.get(9);
+
+        for(ItemDto i : weather){
+            if(b.equals(i.getDate())){
+                schedule.setWeather(i.getWeather());
+            }
+        }
+
         //picRepository에 저장 잘되었는지 확인을 위해 다시 역으로
         List<Long> list = makePicsUserIdList(pics);
 
@@ -63,7 +83,8 @@ public class ScheduleService {
                 savedSchedule.getScheduleContents(),
                 savedSchedule.getWriteDate(),
                 savedSchedule.getUpdateDate(),
-                list
+                list,
+                schedule.getWeather()
         );
     }
 
@@ -119,9 +140,9 @@ public class ScheduleService {
     public ScheduleUpdateResponseDto updateSchedule(Long id, ScheduleUpdateRequestDto scheduleUpdateRequestDto
             , HttpServletRequest res) {
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(()->new NullPointerException("일정이 없습니다."));
-        //
+        //HTTP에서 토큰을 뽑아와 substring 해주고 claim 정보를 뽑아오기
         Claims authCheck= jwtUtil.getUserInfoFromToken(jwtUtil.substringToken(jwtUtil.getTokenFromRequest(res)));
-        //
+        //claim 정보에서 이메일정보를 뽑아와 user를 찾아준다.
         User user = userRepository.findByEmail(authCheck.getSubject()).orElseThrow(()->new NullPointerException("유저가 없습니다."));
         if(UserRoleEnum.ADMIN.equals(user.getRole())){
         schedule.update(scheduleUpdateRequestDto.getScheduleTitle(),
@@ -170,9 +191,9 @@ public class ScheduleService {
 
     public void deleteSchedule(Long id,HttpServletRequest res) {
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(()->new NullPointerException("스케쥴없음"));
-        //
+        //HTTP에서 토큰을 뽑아와 substring 해주고 claim 정보를 뽑아오기
         Claims authCheck= jwtUtil.getUserInfoFromToken(jwtUtil.substringToken(jwtUtil.getTokenFromRequest(res)));
-        //
+        //claim 정보에서 이메일정보를 뽑아와 user를 찾아준다.
         User user = userRepository.findByEmail(authCheck.getSubject()).orElseThrow(()->new NullPointerException("유저가 없습니다."));
         if(UserRoleEnum.ADMIN.equals(user.getRole())){
         scheduleRepository.delete(schedule);}

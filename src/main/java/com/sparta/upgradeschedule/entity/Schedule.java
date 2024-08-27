@@ -46,6 +46,9 @@ public class Schedule {
     @Column(name = "update_date")
     private LocalDateTime updateDate;
 
+    @Column(name = "weather")
+    private String weather;
+
     public Schedule(
             Long id,
             Long writerId,

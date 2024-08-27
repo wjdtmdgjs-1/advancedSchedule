@@ -97,7 +97,6 @@ public class UserService {
     }
 
     //유저이름, 유저이메일 수정가능합니다
-
     public UserUpdateResponseDto updateUser(Long id, UserUpdateRequestDto userUpdateRequestDto) {
         User user = userRepository.findById(id)
                 .orElseThrow(()->new NullPointerException("유저가 없습니다."));
