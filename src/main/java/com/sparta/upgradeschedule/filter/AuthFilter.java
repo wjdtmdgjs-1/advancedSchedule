@@ -30,7 +30,7 @@ public class AuthFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String url = httpServletRequest.getRequestURI();
-
+        //회원가입과 로그인은 인증처리를 하지않기 위해 api를 "/user"로 설정해준다.
         if (StringUtils.hasText(url) &&
                 (url.startsWith("/user") || url.startsWith("/css") || url.startsWith("/js"))
         ) {
