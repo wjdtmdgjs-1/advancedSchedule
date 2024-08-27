@@ -20,23 +20,23 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping("/schedules")
-    public ResponseEntity<ScheduleSaveResponseDto> saveSchedule(@RequestBody ScheduleSaveRequestDto scheduleSaveRequestDto){
-      return ResponseEntity.ok(scheduleService.saveSchedule(scheduleSaveRequestDto));
+    public ResponseEntity<ScheduleSaveResponseDto> saveSchedule(@RequestBody ScheduleSaveRequestDto scheduleSaveRequestDto) {
+        return ResponseEntity.ok(scheduleService.saveSchedule(scheduleSaveRequestDto));
     }
 
     @GetMapping("/schedules/{id}")
-    public ResponseEntity<ScheduleGetResponseDto> getSchedule(@PathVariable Long id){
+    public ResponseEntity<ScheduleGetResponseDto> getSchedule(@PathVariable Long id) {
         return ResponseEntity.ok(scheduleService.getSchedule(id));
     }
 
     @GetMapping("/schedules")
-    public ResponseEntity<List<ScheduleGetAllResponseDto>> getSchedules(){
+    public ResponseEntity<List<ScheduleGetAllResponseDto>> getSchedules() {
         return ResponseEntity.ok(scheduleService.getSchedules());
     }
 
     //페이지네이션
     @GetMapping("/schedules/page")
-    public ResponseEntity<List<SchedulePageResponseDto>> schedulePage(@PageableDefault(page = 0,size=10,sort="updateDate",direction = Sort.Direction.DESC) Pageable pageable){
+    public ResponseEntity<List<SchedulePageResponseDto>> schedulePage(@PageableDefault(page = 0, size = 10, sort = "updateDate", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(scheduleService.schedulePage(pageable));
     }
 
@@ -45,13 +45,13 @@ public class ScheduleController {
     @PutMapping("/schedules/{id}")
     public ResponseEntity<ScheduleUpdateResponseDto> updateSchedule(@PathVariable Long id,
                                                                     @RequestBody ScheduleUpdateRequestDto scheduleUpdateRequestDto,
-                                                                    HttpServletRequest res){
-        return ResponseEntity.ok(scheduleService.updateSchedule(id,scheduleUpdateRequestDto,res));
+                                                                    HttpServletRequest res) {
+        return ResponseEntity.ok(scheduleService.updateSchedule(id, scheduleUpdateRequestDto, res));
     }
 
     @DeleteMapping("/schedules/{id}")
-    public void deleteSchedule(@PathVariable Long id,HttpServletRequest res){
-        scheduleService.deleteSchedule(id,res);
+    public void deleteSchedule(@PathVariable Long id, HttpServletRequest res) {
+        scheduleService.deleteSchedule(id, res);
 
     }
 

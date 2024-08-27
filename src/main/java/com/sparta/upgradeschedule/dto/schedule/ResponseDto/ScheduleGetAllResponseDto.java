@@ -3,7 +3,6 @@ package com.sparta.upgradeschedule.dto.schedule.ResponseDto;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -25,7 +24,7 @@ public class ScheduleGetAllResponseDto {
                                      LocalDateTime updateDate) {
         this.id = id;
         this.writerId = writerId;
-        this.picsId=picsId;
+        this.picsId = picsId;
         this.scheduleTitle = scheduleTitle;
         this.scheduleContents = scheduleContents;
         this.writeDate = writeDate;

@@ -1,6 +1,5 @@
 package com.sparta.upgradeschedule.service;
 
-import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.sparta.upgradeschedule.config.PasswordEncoder;
 import com.sparta.upgradeschedule.dto.user.requestDto.UserLoginRequestDto;
 import com.sparta.upgradeschedule.dto.user.requestDto.UserSaveRequestDto;
@@ -56,7 +55,7 @@ public class UserService {
             throw new IllegalArgumentException("중복된 Email 입니다.");
         }
         UserRoleEnum role = UserRoleEnum.USER;
-        if (userSaveRequestDto.getAdminToken()!=null) {
+        if (userSaveRequestDto.getAdminToken() != null) {
             if (!ADMIN_TOKEN.equals(userSaveRequestDto.getAdminToken())) {
                 throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
             }
@@ -75,7 +74,7 @@ public class UserService {
 
     public UserGetResponseDto getUser(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(()->new NullPointerException("유저가 없습니다."));
+                .orElseThrow(() -> new NullPointerException("유저가 없습니다."));
         return new UserGetResponseDto(user.getId(),
                 user.getUserName(),
                 user.getEmail(),
@@ -86,7 +85,7 @@ public class UserService {
     public List<UserGetResponseDto> getUsers() {
         List<User> userlist = userRepository.findAll();
         List<UserGetResponseDto> dto = new ArrayList<>();
-        for(User u : userlist){
+        for (User u : userlist) {
             dto.add(new UserGetResponseDto(u.getId(),
                     u.getUserName(),
                     u.getEmail(),
@@ -99,8 +98,8 @@ public class UserService {
     //유저이름, 유저이메일 수정가능합니다
     public UserUpdateResponseDto updateUser(Long id, UserUpdateRequestDto userUpdateRequestDto) {
         User user = userRepository.findById(id)
-                .orElseThrow(()->new NullPointerException("유저가 없습니다."));
-        user.update(userUpdateRequestDto.getUserName(),userUpdateRequestDto.getEmail());
+                .orElseThrow(() -> new NullPointerException("유저가 없습니다."));
+        user.update(userUpdateRequestDto.getUserName(), userUpdateRequestDto.getEmail());
         return new UserUpdateResponseDto(user.getId(),
                 user.getUserName(),
                 user.getEmail(),
@@ -111,7 +110,7 @@ public class UserService {
 
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(()->new NullPointerException("유저가 없습니다."));
+                .orElseThrow(() -> new NullPointerException("유저가 없습니다."));
         userRepository.delete(user);
     }
 
@@ -126,13 +125,13 @@ public class UserService {
         );
 
         //비밀번호 확인
-        if(!passwordEncoder.matches(password, user.getPassword())){
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new UnauthorizedException("비밀번호가 일치하지 않습니다.");
         }
 
         //JWT 생성 및 쿠키에 저장 후 Response 객체에 추가
         String token = jwtUtil.createToken(user.getEmail(), user.getRole());
-        jwtUtil.addJwtToCookie(token,res);
+        jwtUtil.addJwtToCookie(token, res);
 
         return new UserLoginResponseDto(token);
     }

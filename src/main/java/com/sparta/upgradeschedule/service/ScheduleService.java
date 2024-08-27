@@ -12,16 +12,12 @@ import com.sparta.upgradeschedule.repository.ScheduleRepository;
 import com.sparta.upgradeschedule.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.cache.spi.support.AbstractReadWriteAccess;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,9 +45,9 @@ public class ScheduleService {
         ArrayList<Long> ids = scheduleSaveRequestDto.getPicsId();
         List<Pic> pics = new ArrayList<>();
         //requestbody로 받아온 담당 유저들의 id를 돌려서 pic 만들어주기.
-        for(Long a : ids){
+        for (Long a : ids) {
             User user = userRepository.findById(a)
-                    .orElseThrow(()->new NullPointerException("유저없음"));
+                    .orElseThrow(() -> new NullPointerException("유저없음"));
             //pic객체 만들어 repository에 저장
             Pic pic = new Pic();
             pic.setUser(user);
@@ -61,14 +57,13 @@ public class ScheduleService {
         }
 
         List<ItemDto> weather = new ArrayList<>(weatherService.searchItems());
-        /*DateTimeFormatter pattern = DateTimeFormatter.ofPattern("MM-dd");
-        LocalDateTime stringWriteTime = LocalDateTime.parse(schedule.getWriteDate().toString(), pattern);*/
+
         String a = schedule.getWriteDate().toString();
         List<String> aa = Arrays.stream(a.split("")).toList();
-        String b = aa.get(5) +aa.get(6)+aa.get(7)+aa.get(8)+aa.get(9);
+        String b = aa.get(5) + aa.get(6) + aa.get(7) + aa.get(8) + aa.get(9);
 
-        for(ItemDto i : weather){
-            if(b.equals(i.getDate())){
+        for (ItemDto i : weather) {
+            if (b.equals(i.getDate())) {
                 schedule.setWeather(i.getWeather());
             }
         }
@@ -88,21 +83,20 @@ public class ScheduleService {
         );
     }
 
-
     public ScheduleGetResponseDto getSchedule(Long id) {
-        Schedule schedule = scheduleRepository.findById(id).orElseThrow(()->new NullPointerException("일정이 없습니다."));
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new NullPointerException("일정이 없습니다."));
         List<Long> list = makePicsUserIdList(schedule.getPicList());
         ArrayList<ArrayList<String>> bigList = new ArrayList<>();
         ArrayList<ArrayList<String>> bigList2 = new ArrayList<>();
-        for(Long l : list){
+        for (Long l : list) {
             ArrayList<String> smallList = new ArrayList<>();
-            User user = userRepository.findById(l).orElseThrow(()->new NullPointerException("유저정보가 없습니다."));
+            User user = userRepository.findById(l).orElseThrow(() -> new NullPointerException("유저정보가 없습니다."));
             smallList.add(String.valueOf(user.getId()));
             smallList.add(user.getUserName());
             smallList.add(user.getEmail());
             bigList.add(smallList);
         }
-        for(Comment c : schedule.getCommentList()){
+        for (Comment c : schedule.getCommentList()) {
             ArrayList<String> smallList2 = new ArrayList<>();
             smallList2.add(c.getCommentWriterName());
             smallList2.add(c.getCommentContents());
@@ -119,11 +113,10 @@ public class ScheduleService {
                 schedule.getUpdateDate());
     }
 
-
     public List<ScheduleGetAllResponseDto> getSchedules() {
         List<Schedule> scheduleList = scheduleRepository.findAll();
         List<ScheduleGetAllResponseDto> dto = new ArrayList<>();
-        for(Schedule s : scheduleList){
+        for (Schedule s : scheduleList) {
             List<Long> list = makePicsUserIdList(s.getPicList());
             dto.add(new ScheduleGetAllResponseDto(s.getId(),
                     s.getWriterId(),
@@ -136,18 +129,17 @@ public class ScheduleService {
         return dto;
     }
 
-
     public ScheduleUpdateResponseDto updateSchedule(Long id, ScheduleUpdateRequestDto scheduleUpdateRequestDto
             , HttpServletRequest res) {
-        Schedule schedule = scheduleRepository.findById(id).orElseThrow(()->new NullPointerException("일정이 없습니다."));
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new NullPointerException("일정이 없습니다."));
         //HTTP에서 토큰을 뽑아와 substring 해주고 claim 정보를 뽑아오기
-        Claims authCheck= jwtUtil.getUserInfoFromToken(jwtUtil.substringToken(jwtUtil.getTokenFromRequest(res)));
+        Claims authCheck = jwtUtil.getUserInfoFromToken(jwtUtil.substringToken(jwtUtil.getTokenFromRequest(res)));
         //claim 정보에서 이메일정보를 뽑아와 user를 찾아준다.
-        User user = userRepository.findByEmail(authCheck.getSubject()).orElseThrow(()->new NullPointerException("유저가 없습니다."));
-        if(UserRoleEnum.ADMIN.equals(user.getRole())){
-        schedule.update(scheduleUpdateRequestDto.getScheduleTitle(),
-                scheduleUpdateRequestDto.getScheduleContents());
-        }else{
+        User user = userRepository.findByEmail(authCheck.getSubject()).orElseThrow(() -> new NullPointerException("유저가 없습니다."));
+        if (UserRoleEnum.ADMIN.equals(user.getRole())) {
+            schedule.update(scheduleUpdateRequestDto.getScheduleTitle(),
+                    scheduleUpdateRequestDto.getScheduleContents());
+        } else {
             throw new AuthorizedCheckException("권한체크");
         }
 
@@ -162,12 +154,12 @@ public class ScheduleService {
     }
 
     //페이지네이션
-    public List<SchedulePageResponseDto> schedulePage(Pageable pageable){
+    public List<SchedulePageResponseDto> schedulePage(Pageable pageable) {
         Page<Schedule> page = scheduleRepository.findAll(pageable);
         List<SchedulePageResponseDto> dto = new ArrayList<>();
 
-        for(Schedule s : page){
-            User user = userRepository.findById(s.getWriterId()).orElseThrow(()->new NullPointerException("유저없음"));
+        for (Schedule s : page) {
+            User user = userRepository.findById(s.getWriterId()).orElseThrow(() -> new NullPointerException("유저없음"));
             SchedulePageResponseDto a = new SchedulePageResponseDto(s.getScheduleTitle(),
                     s.getScheduleContents(),
                     s.countComment(s.getCommentList()),
@@ -180,24 +172,23 @@ public class ScheduleService {
     }
 
     //담당 유저들 id 리스트
-    public List<Long> makePicsUserIdList(List<Pic> pics){
-        List<Long> userIdList =new ArrayList<>();
-        for(Pic p : pics){
+    public List<Long> makePicsUserIdList(List<Pic> pics) {
+        List<Long> userIdList = new ArrayList<>();
+        for (Pic p : pics) {
             userIdList.add(p.getUser().getId());
         }
         return userIdList;
     }
 
-
-    public void deleteSchedule(Long id,HttpServletRequest res) {
-        Schedule schedule = scheduleRepository.findById(id).orElseThrow(()->new NullPointerException("스케쥴없음"));
+    public void deleteSchedule(Long id, HttpServletRequest res) {
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new NullPointerException("스케쥴없음"));
         //HTTP에서 토큰을 뽑아와 substring 해주고 claim 정보를 뽑아오기
-        Claims authCheck= jwtUtil.getUserInfoFromToken(jwtUtil.substringToken(jwtUtil.getTokenFromRequest(res)));
+        Claims authCheck = jwtUtil.getUserInfoFromToken(jwtUtil.substringToken(jwtUtil.getTokenFromRequest(res)));
         //claim 정보에서 이메일정보를 뽑아와 user를 찾아준다.
-        User user = userRepository.findByEmail(authCheck.getSubject()).orElseThrow(()->new NullPointerException("유저가 없습니다."));
-        if(UserRoleEnum.ADMIN.equals(user.getRole())){
-        scheduleRepository.delete(schedule);}
-        else{
+        User user = userRepository.findByEmail(authCheck.getSubject()).orElseThrow(() -> new NullPointerException("유저가 없습니다."));
+        if (UserRoleEnum.ADMIN.equals(user.getRole())) {
+            scheduleRepository.delete(schedule);
+        } else {
             throw new AuthorizedCheckException("권한체크");
         }
     }

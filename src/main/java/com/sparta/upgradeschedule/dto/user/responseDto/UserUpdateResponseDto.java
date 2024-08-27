@@ -5,17 +5,18 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class UserUpdateResponseDto {private final Long id;
+public class UserUpdateResponseDto {
+    private final Long id;
     private final String userName;
     private final String email;
     private final LocalDateTime userCreateDate;
     private final LocalDateTime userUpdateDate;
 
     public UserUpdateResponseDto(Long id,
-                               String userName,
-                               String email,
-                               LocalDateTime userCreateDate,
-                               LocalDateTime userUpdateDate) {
+                                 String userName,
+                                 String email,
+                                 LocalDateTime userCreateDate,
+                                 LocalDateTime userUpdateDate) {
         this.id = id;
         this.userName = userName;
         this.email = email;

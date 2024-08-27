@@ -15,10 +15,10 @@ public class ScheduleUpdateResponseDto {
 
     public ScheduleUpdateResponseDto(Long id,
                                      Long writerId,
-                                  String scheduleTitle,
-                                  String scheduleContents,
-                                  LocalDateTime writeDate,
-                                  LocalDateTime updateDate) {
+                                     String scheduleTitle,
+                                     String scheduleContents,
+                                     LocalDateTime writeDate,
+                                     LocalDateTime updateDate) {
         this.id = id;
         this.writerId = writerId;
         this.scheduleTitle = scheduleTitle;

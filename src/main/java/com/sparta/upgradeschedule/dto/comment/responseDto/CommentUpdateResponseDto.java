@@ -3,6 +3,7 @@ package com.sparta.upgradeschedule.dto.comment.responseDto;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+
 @Getter
 public class CommentUpdateResponseDto {
     private final Long id;

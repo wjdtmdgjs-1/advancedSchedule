@@ -1,7 +1,6 @@
 package com.sparta.upgradeschedule.entity;
 
 
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,7 +37,7 @@ public class Schedule {
 
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(updatable = false,name = "write_date")
+    @Column(updatable = false, name = "write_date")
     private LocalDateTime writeDate;
 
     @LastModifiedDate
@@ -49,37 +48,22 @@ public class Schedule {
     @Column(name = "weather")
     private String weather;
 
-    public Schedule(
-            Long id,
-            Long writerId,
-            String scheduleTitle,
-            String scheduleContents,
-            LocalDateTime writeDate,
-            LocalDateTime updateDate) {
-        this.id = id;
-        this.writerId = writerId;
-        this.scheduleTitle = scheduleTitle;
-        this.scheduleContents = scheduleContents;
-        this.writeDate = writeDate;
-        this.updateDate = updateDate;
-    }
-
-    @OneToMany(mappedBy = "schedule",fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "schedule",cascade = CascadeType.REMOVE,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Pic> picList = new ArrayList<>();
 
     public Schedule(Long writerId, String scheduleTitle, String scheduleContents) {
-        this.writerId=writerId;
-        this.scheduleTitle=scheduleTitle;
-        this.scheduleContents=scheduleContents;
+        this.writerId = writerId;
+        this.scheduleTitle = scheduleTitle;
+        this.scheduleContents = scheduleContents;
 
     }
 
     public void update(String scheduleTitle, String scheduleContents) {
-        this.scheduleTitle=scheduleTitle;
-        this.scheduleContents =scheduleContents;
+        this.scheduleTitle = scheduleTitle;
+        this.scheduleContents = scheduleContents;
     }
 
     //comment의 갯수를 세어주는 메서드

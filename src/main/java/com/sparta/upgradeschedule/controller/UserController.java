@@ -21,24 +21,24 @@ public class UserController {
     private final UserService userservice;
 
     @PostMapping("/user")
-    public ResponseEntity<UserSaveResponseDto> saveUser(@RequestBody UserSaveRequestDto userSaveRequestDto){
+    public ResponseEntity<UserSaveResponseDto> saveUser(@RequestBody UserSaveRequestDto userSaveRequestDto) {
         return ResponseEntity.ok(userservice.saveUser(userSaveRequestDto));
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<UserGetResponseDto> getUser(@PathVariable Long id){
+    public ResponseEntity<UserGetResponseDto> getUser(@PathVariable Long id) {
         return ResponseEntity.ok(userservice.getUser(id));
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<UserGetResponseDto>> getUsers(){
+    public ResponseEntity<List<UserGetResponseDto>> getUsers() {
         return ResponseEntity.ok(userservice.getUsers());
     }
 
     @PutMapping("/users/{id}")
     public ResponseEntity<UserUpdateResponseDto> updateUser(@PathVariable Long id,
-                                                            @RequestBody UserUpdateRequestDto userUpdateRequestDto){
-        return ResponseEntity.ok(userservice.updateUser(id,userUpdateRequestDto));
+                                                            @RequestBody UserUpdateRequestDto userUpdateRequestDto) {
+        return ResponseEntity.ok(userservice.updateUser(id, userUpdateRequestDto));
     }
 
     @PostMapping("/user/login")
@@ -48,12 +48,12 @@ public class UserController {
         } catch (Exception e) {
             System.out.println("로그인에러");
         }
-        return ResponseEntity.ok(userservice.login(userloginRequestDto,res));
+        return ResponseEntity.ok(userservice.login(userloginRequestDto, res));
     }
 
 
     @DeleteMapping("/users/{id}")
-    public void deleteUser(@PathVariable Long id){
+    public void deleteUser(@PathVariable Long id) {
         userservice.deleteUser(id);
     }
 }

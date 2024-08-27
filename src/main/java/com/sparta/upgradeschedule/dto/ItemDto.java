@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.json.JSONObject;
 
-import java.time.LocalDateTime;
-
 @Getter
 @NoArgsConstructor
 public class ItemDto {

@@ -24,7 +24,7 @@ public class UserSaveResponseDto {
         this.id = id;
         this.userName = userName;
         this.email = email;
-        this.token=token;
+        this.token = token;
         this.userCreateDate = userCreateDate;
         this.userUpdateDate = userUpdateDate;
     }

@@ -19,17 +19,17 @@ public class ScheduleGetResponseDto {
     public ScheduleGetResponseDto(Long id,
                                   Long writerId,
                                   ArrayList<ArrayList<String>> picsData,
-                                   String scheduleTitle,
-                                   String scheduleContents,
+                                  String scheduleTitle,
+                                  String scheduleContents,
                                   ArrayList<ArrayList<String>> commentsData,
-                                   LocalDateTime writeDate,
-                                   LocalDateTime updateDate) {
+                                  LocalDateTime writeDate,
+                                  LocalDateTime updateDate) {
         this.id = id;
         this.writerId = writerId;
-        this.picsData=picsData;
+        this.picsData = picsData;
         this.scheduleTitle = scheduleTitle;
         this.scheduleContents = scheduleContents;
-        this.commentsData=commentsData;
+        this.commentsData = commentsData;
         this.writeDate = writeDate;
         this.updateDate = updateDate;
 

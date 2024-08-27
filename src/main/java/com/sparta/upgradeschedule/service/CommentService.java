@@ -16,19 +16,19 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class CommentService {
     private final CommentRepository commentRepository;
     private final ScheduleRepository scheduleRepository;
 
-    @Transactional
+
     public CommentSaveResponseDto saveComment(CommentSaveRequestDto commentSaveRequestDto) {
         Comment comment = new Comment(commentSaveRequestDto.getCommentWriterName(),
                 commentSaveRequestDto.getCommentContents());
         Schedule schedule = scheduleRepository.findById(commentSaveRequestDto.getScheduleId())
-                .orElseThrow(()-> new NullPointerException("일정이 없습니다."));
+                .orElseThrow(() -> new NullPointerException("일정이 없습니다."));
         comment.setSchedule(schedule);
 
         Comment savedComment = commentRepository.save(comment);
@@ -39,10 +39,10 @@ public class CommentService {
                 savedComment.getCommentWriteDate(),
                 savedComment.getCommentUpdateDate());
     }
-    @Transactional
+
     public CommentGetResponseDto getComment(Long id) {
         Comment comment = commentRepository.findById(id)
-                .orElseThrow(()->new NullPointerException("댓글 없습니다."));
+                .orElseThrow(() -> new NullPointerException("댓글 없습니다."));
         return new CommentGetResponseDto(comment.getId(),
                 comment.getCommentWriterName(),
                 comment.getCommentContents(),
@@ -52,8 +52,8 @@ public class CommentService {
 
     public List<CommentGetResponseDto> getComments() {
         List<Comment> commentList = commentRepository.findAll();
-        List<CommentGetResponseDto> dto =new ArrayList<>();
-        for(Comment c:commentList){
+        List<CommentGetResponseDto> dto = new ArrayList<>();
+        for (Comment c : commentList) {
             dto.add(new CommentGetResponseDto(c.getId(),
                     c.getCommentWriterName(),
                     c.getCommentContents(),
@@ -63,10 +63,10 @@ public class CommentService {
         return dto;
     }
 
-    @Transactional
+
     public CommentUpdateResponseDto updateComment(Long id, CommentUpdateRequestDto commentUpdateRequestDto) {
         Comment comment = commentRepository.findById(id)
-                .orElseThrow(()->new NullPointerException("댓글 없습니다."));
+                .orElseThrow(() -> new NullPointerException("댓글 없습니다."));
         comment.update(commentUpdateRequestDto.getCommentContents());
         return new CommentUpdateResponseDto(comment.getId(),
                 comment.getCommentWriterName(),
@@ -75,10 +75,10 @@ public class CommentService {
                 comment.getCommentUpdateDate());
     }
 
-    @Transactional
+
     public void deleteComment(Long id) {
         Comment comment = commentRepository.findById(id)
-                .orElseThrow(()->new NullPointerException("댓글 없습니다."));
+                .orElseThrow(() -> new NullPointerException("댓글 없습니다."));
         commentRepository.delete(comment);
     }
 }

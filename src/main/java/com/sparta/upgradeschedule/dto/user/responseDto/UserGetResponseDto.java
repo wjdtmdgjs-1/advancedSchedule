@@ -14,10 +14,10 @@ public class UserGetResponseDto {
     private final LocalDateTime userUpdateDate;
 
     public UserGetResponseDto(Long id,
-                               String userName,
-                               String email,
-                               LocalDateTime userCreateDate,
-                               LocalDateTime userUpdateDate) {
+                              String userName,
+                              String email,
+                              LocalDateTime userCreateDate,
+                              LocalDateTime userUpdateDate) {
         this.id = id;
         this.userName = userName;
         this.email = email;
