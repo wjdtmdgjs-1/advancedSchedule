@@ -75,7 +75,6 @@ public class CommentService {
                 comment.getCommentUpdateDate());
     }
 
-
     public void deleteComment(Long id) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new NullPointerException("댓글 없습니다."));
