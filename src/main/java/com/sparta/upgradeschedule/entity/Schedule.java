@@ -48,10 +48,10 @@ public class Schedule {
     @Column(name = "weather")
     private String weather;
 
-    @OneToMany(mappedBy = "schedule", cascade = CascadeType.REMOVE,orphanRemoval = true)
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "schedule", cascade = CascadeType.REMOVE,orphanRemoval = true)
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Pic> picList = new ArrayList<>();
 
     public Schedule(Long writerId, String scheduleTitle, String scheduleContents) {
